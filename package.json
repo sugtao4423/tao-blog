@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "build-standalone": "next build && cp -r ./.next/standalone ./ && cp -r ./public ./standalone/ && cp -r ./.next/static ./standalone/.next/",
+    "start-standalone": "cd ./standalone && node server.js",
     "lint": "next lint",
     "format": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json}'",
     "format:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json}'"
