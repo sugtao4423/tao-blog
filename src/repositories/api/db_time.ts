@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
+dayjs.extend(utc)
+
 export default class DBTime {
   /**
    * Convert database datetime to unixtime
@@ -8,7 +10,6 @@ export default class DBTime {
    * @returns unixtime
    */
   static dbDatetime2Unixtime = (dbDatetime: string): number => {
-    dayjs.extend(utc)
     return dayjs(dbDatetime).unix()
   }
 
