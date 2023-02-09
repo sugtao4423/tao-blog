@@ -5,7 +5,7 @@ export type UserTable = {
   name: string
   email: string
   password: string
-  url: string
+  url: string | null
   createdAt: string
 }
 
