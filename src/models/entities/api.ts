@@ -16,7 +16,7 @@ export type GetComment = {
   parentId: number | null
   postId: number
   author: {
-    id: number
+    id: number | null
     name: string
     url: string | null
   } | null
