@@ -23,6 +23,7 @@
     "dayjs": "^1.11.7",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
+    "jsonwebtoken": "^9.0.0",
     "kysely": "^0.23.4",
     "mysql2": "^3.1.1",
     "next": "13.1.6",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "dotenv": "^16.0.3",
     "eslint-config-airbnb": "^19.0.4",
