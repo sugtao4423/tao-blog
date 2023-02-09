@@ -9,6 +9,12 @@ export type UserTable = {
   createdAt: string
 }
 
+export type LoginUser = Omit<UserTable, 'id' | 'password' | 'createdAt'> & {
+  id: number
+  hashedPassword: string
+  createdAt: number
+}
+
 export type TagTable = {
   readonly id: Generated<number>
   name: string
