@@ -5,6 +5,13 @@ dayjs.extend(utc)
 
 export default class DBTime {
   /**
+   * @returns current database datetime
+   */
+  static nowDbDatetime = (): string => {
+    return dayjs().utc().format('YYYY-MM-DD HH:mm:ss')
+  }
+
+  /**
    * Convert database datetime to unixtime
    * @param dbDatetime database datetime
    * @returns unixtime
