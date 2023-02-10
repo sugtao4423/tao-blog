@@ -13,6 +13,8 @@ const error = (code: number, message: string): AuthLogin => ({
 })
 
 export default class AuthLoginService {
+  static MethodNotAllowedError: AuthLogin = error(405, 'Method Not Allowed')
+
   static login = async (
     email: string | null | undefined,
     password: string | null | undefined
