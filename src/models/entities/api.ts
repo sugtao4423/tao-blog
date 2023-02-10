@@ -5,6 +5,10 @@ export type GetUser = {
   createdAt: number
 }
 
+export type CreateTag = {
+  name: string
+}
+
 export type GetTag = {
   readonly id: number
   name: string
