@@ -1,4 +1,4 @@
-import { CreatedTag, PaginationGetTags } from '@/models/entities/api/tags'
+import { CreatedTag, PaginationGetTags } from '@/models/entities/api/tag'
 import { withModifyAuth } from '@/services/api/api_handler'
 import { parsePagination } from '@/services/api/pagination'
 import TagsService from '@/services/api/tags'

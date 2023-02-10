@@ -1,4 +1,4 @@
-import { GetTag } from '@/models/entities/api'
+import { GetTag } from '@/models/entities/api/tag'
 import { DatabasePagination, DatabaseTables } from '@/models/entities/database'
 import { Selection } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'

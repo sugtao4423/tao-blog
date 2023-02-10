@@ -1,4 +1,4 @@
-import { CreatedTag, PaginationGetTags } from '@/models/entities/api/tags'
+import { CreatedTag, PaginationGetTags } from '@/models/entities/api/tag'
 import DBPagination from '@/repositories/api/db_pagination'
 import TagDB from '@/repositories/api/tag_db'
 
