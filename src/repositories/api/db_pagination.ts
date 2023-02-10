@@ -1,3 +1,5 @@
+import Pagination from '@/models/entities/api/pagination'
+
 type DBPaginationProps = {
   page: number
   count: number
@@ -16,6 +18,13 @@ export default abstract class DBPagination {
   /** Is pagination */
   protected isPagination = (): boolean => {
     return this.page !== -1 && this.count !== -1
+  }
+
+  /**
+   * Get pagination
+   */
+  protected getPagination = (): Pagination => {
+    return { page: this.page, count: this.count }
   }
 
   /** Get pagination offset */

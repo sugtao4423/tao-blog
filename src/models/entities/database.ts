@@ -55,3 +55,8 @@ export type DatabaseTables = {
   comments: CommentTable
   posts: PostTable
 }
+
+export type DatabasePagination = {
+  offset: number
+  limit: number
+}
