@@ -17,9 +17,10 @@ export const withModifyAuth = (
     const verify = AuthVerifyService.verify(authorization)
     if (verify.error) {
       const error: AuthVerify = {
+        code: 401,
         error: true,
         message: 'Unauthorized',
-        code: 401,
+        data: 'NG',
       }
       return res.status(error.code).json(error)
     }

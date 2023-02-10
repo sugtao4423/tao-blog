@@ -6,10 +6,10 @@ import jwt from 'jsonwebtoken'
 const { JWT_SECRET } = process.env
 
 const error = (code: number, message: string): AuthLogin => ({
+  code,
   error: true,
   message,
-  code,
-  token: null,
+  data: null,
 })
 
 export default class AuthLoginService {
@@ -49,7 +49,7 @@ export default class AuthLoginService {
 
     return {
       code: 200,
-      token,
+      data: token,
     }
   }
 }

@@ -4,9 +4,10 @@ import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
 const { JWT_SECRET } = process.env
 
 const error = (code: number, message: string): AuthVerify => ({
+  code,
   error: true,
   message,
-  code,
+  data: 'NG',
 })
 
 const errorMessage = (e: unknown): string => {
@@ -28,6 +29,7 @@ export default class AuthVerifyService {
       jwt.verify(token, JWT_SECRET)
       return {
         code: 200,
+        data: 'OK',
       }
     } catch (e) {
       return error(403, errorMessage(e))

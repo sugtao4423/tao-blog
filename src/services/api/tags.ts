@@ -2,13 +2,11 @@ import { CreatedTag, PaginationGetTags } from '@/models/entities/api/tag'
 import DBPagination from '@/repositories/api/db_pagination'
 import TagDB from '@/repositories/api/tag_db'
 
-const error = (
-  code: number,
-  message: string
-): CreatedTag | PaginationGetTags => ({
-  error: true,
+const error = (code: number, message: string): CreatedTag => ({
   code,
+  error: true,
   message,
+  data: 'NG',
 })
 
 export default class TagsService extends DBPagination {
@@ -28,6 +26,7 @@ export default class TagsService extends DBPagination {
 
     return {
       code: 201,
+      data: 'OK',
     }
   }
 
@@ -40,14 +39,14 @@ export default class TagsService extends DBPagination {
       return {
         ...error(500, tags.message),
         pagination: this.getPagination(),
-        tags: [],
+        data: [],
       }
     }
 
     return {
       code: 200,
       pagination: this.getPagination(),
-      tags,
+      data: tags,
     }
   }
 }

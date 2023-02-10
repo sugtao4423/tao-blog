@@ -1,12 +1,5 @@
-export type AuthLogin = {
-  error?: boolean
-  message?: string
-  code: number
-  token: string | null
-}
+import { CommonResponse } from './common_response'
 
-export type AuthVerify = {
-  error?: boolean
-  message?: string
-  code: number
-}
+export type AuthLogin = CommonResponse<string | null>
+
+export type AuthVerify = CommonResponse<'OK' | 'NG'>

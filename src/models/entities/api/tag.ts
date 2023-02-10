@@ -1,4 +1,4 @@
-import Pagination from './pagination'
+import { CommonResponse, PaginationCommonResponse } from './common_response'
 
 export type GetTag = {
   readonly id: number
@@ -10,16 +10,6 @@ export type CreateTag = {
   name: string
 }
 
-export type CreatedTag = {
-  error?: boolean
-  message?: string
-  code: number
-}
+export type CreatedTag = CommonResponse<'OK' | 'NG'>
 
-export type PaginationGetTags = {
-  error?: boolean
-  message?: string
-  code: number
-  pagination: Pagination
-  tags: GetTag[]
-}
+export type PaginationGetTags = PaginationCommonResponse<GetTag>
