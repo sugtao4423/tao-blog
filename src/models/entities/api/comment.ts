@@ -13,6 +13,8 @@ export type GetComment = {
   createdAt: number
 }
 
+export type GetPostComments = CommonResponse<GetComment[]>
+
 export type CreateComment = {
   parentId: number | null
   authorId: number | null

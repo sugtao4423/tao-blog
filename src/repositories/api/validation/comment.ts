@@ -4,6 +4,19 @@ import UserDB from '../user_db'
 
 export default class CommentValidation {
   /**
+   * Validate postId query
+   * @param req `NextApiRequest`
+   * @returns `number | Error`
+   */
+  static postId = (req: NextApiRequest): number | Error => {
+    const { postId } = req.query
+    if (!postId || Array.isArray(postId)) {
+      return new Error('Invalid postId')
+    }
+    return Number(postId)
+  }
+
+  /**
    * Validate `CreateComment`
    * @param req `NextApiRequest`
    * @returns `({ postId: number } & CreateComment) | Error`
@@ -11,9 +24,9 @@ export default class CommentValidation {
   static createComment = async (
     req: NextApiRequest
   ): Promise<({ postId: number } & CreateComment) | Error> => {
-    const { postId } = req.query
-    if (!postId || Array.isArray(postId)) {
-      return new Error('Invalid postId')
+    const postId = CommentValidation.postId(req)
+    if (postId instanceof Error) {
+      return postId
     }
 
     const comment = req.body as CreateComment

@@ -1,4 +1,4 @@
-import { CreatedComment } from '@/models/entities/api/comment'
+import { CreatedComment, GetPostComments } from '@/models/entities/api/comment'
 import CommentDB from '@/repositories/api/comment_db'
 import CommentValidation from '@/repositories/api/validation/comment'
 import { NextApiRequest } from 'next'
@@ -40,6 +40,31 @@ export default class CommentsService {
     return {
       code: 201,
       data: 'OK',
+    }
+  }
+
+  static getCommentsFromPostId = async (
+    req: NextApiRequest
+  ): Promise<GetPostComments> => {
+    const postId = CommentValidation.postId(req)
+    if (postId instanceof Error) {
+      return {
+        ...error(400, postId.message),
+        data: [],
+      }
+    }
+
+    const comments = await CommentDB.getCommentsFromPostId(postId)
+    if (comments instanceof Error) {
+      return {
+        ...error(500, comments.message),
+        data: [],
+      }
+    }
+
+    return {
+      code: 200,
+      data: comments,
     }
   }
 }
