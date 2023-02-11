@@ -8,7 +8,7 @@
     "start": "next start",
     "build-standalone": "next build && cp -r ./.next/standalone ./ && cp -r ./public ./standalone/ && cp -r ./.next/static ./standalone/.next/",
     "start-standalone": "cd ./standalone && node server.js",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings=0",
     "format": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json}'",
     "format:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json}'",
     "db:createTable": "npx tsx scripts/CreateTable.ts",
