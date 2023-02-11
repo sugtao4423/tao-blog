@@ -8,9 +8,7 @@ const handler = async (
   res: NextApiResponse<UpdatedTag>
 ) => {
   if (req.method === 'PUT') {
-    const { id } = req.query
-    const { name } = req.body
-    const updated = await TagsService.updateTag(id, name)
+    const updated = await TagsService.updateTag(req)
     res.status(updated.code).json(updated)
     return
   }

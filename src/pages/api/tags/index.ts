@@ -9,8 +9,7 @@ const handler = async (
   res: NextApiResponse<CreatedTag | PaginationGetTags>
 ) => {
   if (req.method === 'POST') {
-    const { name } = req.body
-    const created = await TagsService.createTag(name)
+    const created = await TagsService.createTag(req)
     res.status(created.code).json(created)
     return
   }

@@ -5,6 +5,8 @@ import {
 } from '@/models/entities/api/tag'
 import DBPagination from '@/repositories/api/db_pagination'
 import TagDB from '@/repositories/api/tag_db'
+import TagValidation from '@/repositories/api/validation/tag'
+import { NextApiRequest } from 'next'
 
 const error = (code: number, message: string): CreatedTag => ({
   code,
@@ -16,16 +18,15 @@ const error = (code: number, message: string): CreatedTag => ({
 export default class TagsService extends DBPagination {
   static MethodNotAllowedError: CreatedTag = error(405, 'Method Not Allowed')
 
-  static createTag = async (
-    name: string | null | undefined
-  ): Promise<CreatedTag> => {
-    if (!name) {
-      return error(400, 'Invalid name')
+  static createTag = async (req: NextApiRequest): Promise<CreatedTag> => {
+    const tag = TagValidation.createTag(req)
+    if (tag instanceof Error) {
+      return error(400, tag.message)
     }
 
-    const tag = await TagDB.createTag(name)
-    if (tag instanceof Error) {
-      return error(500, tag.message)
+    const created = await TagDB.createTag(tag)
+    if (created instanceof Error) {
+      return error(500, created.message)
     }
 
     return {
@@ -51,18 +52,13 @@ export default class TagsService extends DBPagination {
     }
   }
 
-  static updateTag = async (
-    id: number | string | string[] | null | undefined,
-    name: string | null | undefined
-  ): Promise<UpdatedTag> => {
-    if (!id || Array.isArray(id)) {
-      return error(400, 'Invalid id')
-    }
-    if (!name) {
-      return error(400, 'Invalid name')
+  static updateTag = async (req: NextApiRequest): Promise<UpdatedTag> => {
+    const tag = TagValidation.updateTag(req)
+    if (tag instanceof Error) {
+      return error(400, tag.message)
     }
 
-    const updated = await TagDB.updateTag(Number(id), name)
+    const updated = await TagDB.updateTag(tag.id, tag)
     if (updated instanceof Error) {
       return error(500, updated.message)
     }

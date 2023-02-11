@@ -1,4 +1,4 @@
-import { GetTag } from '@/models/entities/api/tag'
+import { CreateTag, GetTag, UpdateTag } from '@/models/entities/api/tag'
 import {
   DatabasePagination,
   DatabaseTables,
@@ -14,12 +14,12 @@ import DatabaseUpdateError from './errors/db_update'
 type RowType = Selection<From<DatabaseTables, 'tags'>, 'tags', keyof TagTable>
 
 export default class TagDB {
-  static createTag = async (name: string): Promise<null | Error> => {
+  static createTag = async (tag: CreateTag): Promise<null | Error> => {
     try {
       await db
         .insertInto('tags')
         .values({
-          name,
+          name: tag.name,
           createdAt: DBTime.nowDbDatetime(),
         })
         .executeTakeFirstOrThrow()
@@ -53,12 +53,14 @@ export default class TagDB {
 
   static updateTag = async (
     id: number,
-    name: string
+    tag: UpdateTag
   ): Promise<null | Error> => {
     try {
       await db
         .updateTable('tags')
-        .set({ name })
+        .set({
+          name: tag.name,
+        })
         .where('id', '=', id)
         .executeTakeFirstOrThrow()
       return null
