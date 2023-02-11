@@ -1,4 +1,8 @@
-import { CreatedTag, PaginationGetTags } from '@/models/entities/api/tag'
+import {
+  CreatedTag,
+  PaginationGetTags,
+  UpdatedTag,
+} from '@/models/entities/api/tag'
 import DBPagination from '@/repositories/api/db_pagination'
 import TagDB from '@/repositories/api/tag_db'
 
@@ -44,6 +48,28 @@ export default class TagsService extends DBPagination {
       code: 200,
       pagination: this.getApiPagination(),
       data: tags,
+    }
+  }
+
+  static updateTag = async (
+    id: number | string | string[] | null | undefined,
+    name: string | null | undefined
+  ): Promise<UpdatedTag> => {
+    if (!id || Array.isArray(id)) {
+      return error(400, 'Invalid id')
+    }
+    if (!name) {
+      return error(400, 'Invalid name')
+    }
+
+    const updated = await TagDB.updateTag(Number(id), name)
+    if (updated instanceof Error) {
+      return error(500, updated.message)
+    }
+
+    return {
+      code: 200,
+      data: 'OK',
     }
   }
 }

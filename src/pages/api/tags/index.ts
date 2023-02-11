@@ -10,8 +10,8 @@ const handler = async (
 ) => {
   if (req.method === 'POST') {
     const { name } = req.body
-    const tag = await TagsService.createTag(name)
-    res.status(tag.code).json(tag)
+    const created = await TagsService.createTag(name)
+    res.status(created.code).json(created)
     return
   }
   if (req.method === 'GET') {

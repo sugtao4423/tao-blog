@@ -6,10 +6,14 @@ export type GetTag = {
   createdAt: number
 }
 
+export type PaginationGetTags = PaginationCommonResponse<GetTag>
+
 export type CreateTag = {
   name: string
 }
 
 export type CreatedTag = CommonResponse<'OK' | 'NG'>
 
-export type PaginationGetTags = PaginationCommonResponse<GetTag>
+export type UpdateTag = CreateTag
+
+export type UpdatedTag = CreatedTag

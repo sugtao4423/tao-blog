@@ -5,6 +5,7 @@ import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
 import DBTime from './db_time'
 import DatabaseSelectError from './errors/db_select'
+import DatabaseUpdateError from './errors/db_update'
 
 type RowType = Selection<From<DatabaseTables, 'tags'>, 'tags', keyof GetTag>
 
@@ -43,6 +44,22 @@ export default class TagDB {
       return tags.map(TagDB.convertRow)
     } catch (e) {
       return new DatabaseSelectError(e, 'Get tags error')
+    }
+  }
+
+  static updateTag = async (
+    id: number,
+    name: string
+  ): Promise<null | Error> => {
+    try {
+      await db
+        .updateTable('tags')
+        .set({ name })
+        .where('id', '=', id)
+        .executeTakeFirstOrThrow()
+      return null
+    } catch (e) {
+      return new DatabaseUpdateError(e, 'Update tag error')
     }
   }
 }
