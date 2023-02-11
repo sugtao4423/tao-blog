@@ -8,6 +8,7 @@ import { LeftJoinedDB, Selection } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
 import DBTime from './db_time'
+import DatabaseDeleteError from './errors/db_delete'
 import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
 
@@ -134,6 +135,21 @@ export default class CommentDB {
       return comments.map(CommentDB.convertRow)
     } catch (e) {
       return new DatabaseSelectError(e, 'Get comments error')
+    }
+  }
+
+  static deleteComment = async (id: number): Promise<null | Error> => {
+    try {
+      await db
+        .deleteFrom('comments')
+        .where('id', '=', id)
+        .whereNotExists((qb) =>
+          qb.selectFrom('comments').select('id').where('parentId', '=', id)
+        )
+        .executeTakeFirstOrThrow()
+      return null
+    } catch (e) {
+      return new DatabaseDeleteError(e, 'Delete comment error')
     }
   }
 }

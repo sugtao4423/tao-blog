@@ -29,3 +29,5 @@ export type CreateComment = {
 }
 
 export type CreatedComment = CommonResponse<'OK' | 'NG'>
+
+export type DeletedComment = CommonResponse<'OK' | 'NG'>

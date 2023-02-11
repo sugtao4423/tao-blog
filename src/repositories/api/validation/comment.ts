@@ -18,6 +18,19 @@ export default class CommentValidation {
   }
 
   /**
+   * Validate id query
+   * @param req `NextApiRequest`
+   * @returns `number | Error`
+   */
+  static deleteId = (req: NextApiRequest): number | Error => {
+    const { id } = req.query
+    if (!CommonValidation.isNumber(id)) {
+      return new Error('Invalid id')
+    }
+    return Number(id)
+  }
+
+  /**
    * Validate `CreateComment`
    * @param req `NextApiRequest`
    * @returns `({ postId: number } & CreateComment) | Error`

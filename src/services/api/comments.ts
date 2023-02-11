@@ -1,5 +1,6 @@
 import {
   CreatedComment,
+  DeletedComment,
   GetPostComments,
   PaginationGetComments,
 } from '@/models/entities/api/comment'
@@ -109,6 +110,25 @@ export default class CommentsService extends DBPagination {
       code: 200,
       pagination: this.getApiPagination(),
       data: comments,
+    }
+  }
+
+  static deleteComment = async (
+    req: NextApiRequest
+  ): Promise<DeletedComment> => {
+    const id = CommentValidation.deleteId(req)
+    if (id instanceof Error) {
+      return error(400, id.message)
+    }
+
+    const deleted = await CommentDB.deleteComment(id)
+    if (deleted instanceof Error) {
+      return error(500, deleted.message)
+    }
+
+    return {
+      code: 200,
+      data: 'OK',
     }
   }
 }
