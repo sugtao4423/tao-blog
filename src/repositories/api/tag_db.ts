@@ -1,5 +1,9 @@
 import { GetTag } from '@/models/entities/api/tag'
-import { DatabasePagination, DatabaseTables } from '@/models/entities/database'
+import {
+  DatabasePagination,
+  DatabaseTables,
+  TagTable,
+} from '@/models/entities/database'
 import { Selection } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
@@ -7,7 +11,7 @@ import DBTime from './db_time'
 import DatabaseSelectError from './errors/db_select'
 import DatabaseUpdateError from './errors/db_update'
 
-type RowType = Selection<From<DatabaseTables, 'tags'>, 'tags', keyof GetTag>
+type RowType = Selection<From<DatabaseTables, 'tags'>, 'tags', keyof TagTable>
 
 export default class TagDB {
   static createTag = async (name: string): Promise<null | Error> => {
