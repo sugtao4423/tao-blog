@@ -34,6 +34,25 @@ type RowType = Selection<
 >
 
 export default class CommentDB {
+  static isValidReplyComment = async (
+    postId: number,
+    parentId: number
+  ): Promise<boolean | Error> => {
+    try {
+      const validComment = await db
+        .selectFrom('comments')
+        .select([(b) => b.fn.count('id').as('count')])
+        .where('id', '=', parentId)
+        .where('parentId', 'is', null)
+        .where('postId', '=', postId)
+        .executeTakeFirstOrThrow()
+
+      return validComment.count > 0
+    } catch (e) {
+      return new DatabaseSelectError(e, 'Get comment error')
+    }
+  }
+
   static createComment = async ({
     postId,
     authorIp,
