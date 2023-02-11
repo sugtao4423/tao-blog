@@ -9,7 +9,9 @@ const DEFAULT_COUNT = 10
  * @param req `NextApiRequest`
  * @returns `Pagination`
  */
-export const parsePagination = (req: NextApiRequest): Pagination => {
+export const parsePagination = (req: NextApiRequest): Pagination | null => {
+  if (!req.query.p && !req.query.c) return null
+
   const stringNum = (str: unknown, init: number): number => {
     const num = Number(str) || init
     return num > 0 ? num : init

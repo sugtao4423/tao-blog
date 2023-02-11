@@ -30,18 +30,15 @@ export default class TagDB {
     createdAt: DBTime.dbDatetime2Unixtime(row.createdAt),
   })
 
-  static getTags = async ({
-    offset,
-    limit,
-  }: DatabasePagination): Promise<GetTag[] | Error> => {
+  static getTags = async (
+    pagination: DatabasePagination | null
+  ): Promise<GetTag[] | Error> => {
     try {
-      const tags = await db
-        .selectFrom('tags')
-        .selectAll()
-        .orderBy('createdAt', 'desc')
-        .offset(offset)
-        .limit(limit)
-        .execute()
+      let query = db.selectFrom('tags').selectAll().orderBy('createdAt', 'desc')
+      if (pagination) {
+        query = query.offset(pagination.offset).limit(pagination.limit)
+      }
+      const tags = await query.execute()
 
       return tags.map(TagDB.convertRow)
     } catch (e) {

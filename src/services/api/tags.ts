@@ -31,21 +31,18 @@ export default class TagsService extends DBPagination {
   }
 
   getTags = async (): Promise<PaginationGetTags> => {
-    const tags = await TagDB.getTags({
-      offset: this.getOffset(),
-      limit: this.getLimit(),
-    })
+    const tags = await TagDB.getTags(this.getPagination())
     if (tags instanceof Error) {
       return {
         ...error(500, tags.message),
-        pagination: this.getPagination(),
+        pagination: this.getApiPagination(),
         data: [],
       }
     }
 
     return {
       code: 200,
-      pagination: this.getPagination(),
+      pagination: this.getApiPagination(),
       data: tags,
     }
   }
