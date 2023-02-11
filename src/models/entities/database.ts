@@ -23,7 +23,7 @@ export type TagTable = {
 
 export type CommentTable = {
   readonly id: Generated<number>
-  parantId: number | null
+  parentId: number | null
   postId: number
   authorId: number | null
   authorName: string | null
