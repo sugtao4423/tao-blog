@@ -1,4 +1,4 @@
-import { CommonResponse } from './common_response'
+import { CommonResponse, PaginationCommonResponse } from './common_response'
 
 export type GetComment = {
   readonly id: number
@@ -14,6 +14,8 @@ export type GetComment = {
 }
 
 export type GetPostComments = CommonResponse<GetComment[]>
+
+export type PaginationGetComments = PaginationCommonResponse<GetComment>
 
 export type CreateComment = {
   parentId: number | null

@@ -1,5 +1,9 @@
 import { CreateComment, GetComment } from '@/models/entities/api/comment'
-import { DatabaseTables, UserTable } from '@/models/entities/database'
+import {
+  DatabasePagination,
+  DatabaseTables,
+  UserTable,
+} from '@/models/entities/database'
 import { LeftJoinedDB, Selection } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
@@ -17,6 +21,7 @@ type CreateType = {
 const selectTarget = [
   'comments.id as commentId',
   'comments.parentId as commentParentId',
+  'comments.postId as commentPostId',
   'comments.authorId as commentAuthorId',
   'comments.authorName as commentAuthorName',
   'comments.authorUrl as commentAuthorUrl',
@@ -81,10 +86,10 @@ export default class CommentDB {
     }
   }
 
-  private static convertRow = (postId: number, row: RowType): GetComment => ({
+  private static convertRow = (row: RowType): GetComment => ({
     id: row.commentId,
     parentId: row.commentParentId,
-    postId,
+    postId: row.commentPostId,
     author: {
       id: row.commentAuthorId,
       name: row.commentAuthorName ?? row.userName,
@@ -106,7 +111,27 @@ export default class CommentDB {
         .orderBy('comments.createdAt', 'desc')
         .execute()
 
-      return comments.map((comment) => CommentDB.convertRow(postId, comment))
+      return comments.map(CommentDB.convertRow)
+    } catch (e) {
+      return new DatabaseSelectError(e, 'Get comments error')
+    }
+  }
+
+  static getComments = async (
+    pagination: DatabasePagination | null
+  ): Promise<GetComment[] | Error> => {
+    try {
+      let query = db
+        .selectFrom('comments')
+        .leftJoin('users', 'comments.authorId', 'users.id')
+        .select(selectTarget)
+        .orderBy('comments.createdAt', 'desc')
+      if (pagination) {
+        query = query.offset(pagination.offset).limit(pagination.limit)
+      }
+      const comments = await query.execute()
+
+      return comments.map(CommentDB.convertRow)
     } catch (e) {
       return new DatabaseSelectError(e, 'Get comments error')
     }

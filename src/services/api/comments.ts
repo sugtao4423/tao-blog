@@ -1,5 +1,10 @@
-import { CreatedComment, GetPostComments } from '@/models/entities/api/comment'
+import {
+  CreatedComment,
+  GetPostComments,
+  PaginationGetComments,
+} from '@/models/entities/api/comment'
 import CommentDB from '@/repositories/api/comment_db'
+import DBPagination from '@/repositories/api/db_pagination'
 import PostDB from '@/repositories/api/post_db'
 import CommentValidation from '@/repositories/api/validation/comment'
 import { NextApiRequest } from 'next'
@@ -12,7 +17,7 @@ const error = (code: number, message: string): CreatedComment => ({
   data: 'NG',
 })
 
-export default class CommentsService {
+export default class CommentsService extends DBPagination {
   static MethodNotAllowedError: CreatedComment = error(
     405,
     'Method Not Allowed'
@@ -86,6 +91,23 @@ export default class CommentsService {
 
     return {
       code: 200,
+      data: comments,
+    }
+  }
+
+  getComments = async (): Promise<PaginationGetComments> => {
+    const comments = await CommentDB.getComments(this.getPagination())
+    if (comments instanceof Error) {
+      return {
+        ...error(500, comments.message),
+        pagination: this.getApiPagination(),
+        data: [],
+      }
+    }
+
+    return {
+      code: 200,
+      pagination: this.getApiPagination(),
       data: comments,
     }
   }
