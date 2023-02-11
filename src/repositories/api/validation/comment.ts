@@ -10,7 +10,7 @@ export default class CommentValidation {
    */
   static postId = (req: NextApiRequest): number | Error => {
     const { postId } = req.query
-    if (!postId || Array.isArray(postId)) {
+    if (!postId || Array.isArray(postId) || Number.isNaN(Number(postId))) {
       return new Error('Invalid postId')
     }
     return Number(postId)

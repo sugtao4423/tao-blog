@@ -24,7 +24,7 @@ export default class TagValidation {
     req: NextApiRequest
   ): ({ id: number } & UpdateTag) | Error => {
     const { id } = req.query
-    if (!id || Array.isArray(id)) {
+    if (!id || Array.isArray(id) || Number.isNaN(Number(id))) {
       return new Error('Invalid id')
     }
 
