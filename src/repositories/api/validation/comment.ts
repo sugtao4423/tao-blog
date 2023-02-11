@@ -1,6 +1,7 @@
 import { CreateComment } from '@/models/entities/api/comment'
 import { NextApiRequest } from 'next'
 import UserDB from '../user_db'
+import CommonValidation from './common'
 
 export default class CommentValidation {
   /**
@@ -10,7 +11,7 @@ export default class CommentValidation {
    */
   static postId = (req: NextApiRequest): number | Error => {
     const { postId } = req.query
-    if (!postId || Array.isArray(postId) || Number.isNaN(Number(postId))) {
+    if (!CommonValidation.isNumber(postId)) {
       return new Error('Invalid postId')
     }
     return Number(postId)

@@ -1,5 +1,6 @@
 import { CreateTag, UpdateTag } from '@/models/entities/api/tag'
 import { NextApiRequest } from 'next'
+import CommonValidation from './common'
 
 export default class TagValidation {
   /**
@@ -24,7 +25,7 @@ export default class TagValidation {
     req: NextApiRequest
   ): ({ id: number } & UpdateTag) | Error => {
     const { id } = req.query
-    if (!id || Array.isArray(id) || Number.isNaN(Number(id))) {
+    if (!CommonValidation.isNumber(id)) {
       return new Error('Invalid id')
     }
 
