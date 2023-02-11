@@ -1,3 +1,5 @@
+import { CommonResponse } from './common_response'
+
 export type GetComment = {
   readonly id: number
   parentId: number | null
@@ -10,3 +12,16 @@ export type GetComment = {
   content: string
   createdAt: number
 }
+
+export type CreateComment = {
+  parentId: number | null
+  authorId: number | null
+  author: {
+    name: string
+    email: string
+    url: string | null
+  } | null
+  content: string
+}
+
+export type CreatedComment = CommonResponse<'OK' | 'NG'>
