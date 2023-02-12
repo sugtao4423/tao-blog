@@ -40,6 +40,11 @@ type RowType = Selection<
 >
 
 export default class CommentDB {
+  /**
+   * Is comment valid to reply
+   * @param postId To comment post id
+   * @param parentId To comment parent comment id
+   */
   static isValidReplyComment = async (
     postId: number,
     parentId: number
@@ -59,6 +64,11 @@ export default class CommentDB {
     }
   }
 
+  /**
+   * Create comment in database
+   * @param param Create comment parameters
+   * @returns `null` if success, `Error` if failed
+   */
   static createComment = async ({
     postId,
     authorIp,
@@ -87,6 +97,11 @@ export default class CommentDB {
     }
   }
 
+  /**
+   * Convert row to `GetComment`
+   * @param row Row to convert
+   * @returns `GetComment`
+   */
   private static convertRow = (row: RowType): GetComment => ({
     id: row.commentId,
     parentId: row.commentParentId,
@@ -100,6 +115,11 @@ export default class CommentDB {
     createdAt: DBTime.dbDatetime2Unixtime(row.commentCreatedAt),
   })
 
+  /**
+   * Get comments by post id from database
+   * @param postId Target post id
+   * @returns `GetComment[]` if success, `Error` if failed
+   */
   static getCommentsFromPostId = async (
     postId: number
   ): Promise<GetComment[] | Error> => {
@@ -118,6 +138,11 @@ export default class CommentDB {
     }
   }
 
+  /**
+   * Get comments from database
+   * @param pagination if null, get all comments
+   * @returns `GetComment[]` if success, `Error` if failed
+   */
   static getComments = async (
     pagination: DatabasePagination | null
   ): Promise<GetComment[] | Error> => {
@@ -138,6 +163,11 @@ export default class CommentDB {
     }
   }
 
+  /**
+   * Delete comment from database
+   * @param id Target comment id
+   * @returns `null` if success, `Error` if failed
+   */
   static deleteComment = async (id: number): Promise<null | Error> => {
     try {
       await db

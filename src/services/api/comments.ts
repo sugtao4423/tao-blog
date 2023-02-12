@@ -24,6 +24,11 @@ export default class CommentsService extends DBPagination {
     'Method Not Allowed'
   )
 
+  /**
+   * Create comment to post or reply to comment
+   * @param req `NextApiRequest`
+   * @returns `CreatedComment`
+   */
   static createComment = async (
     req: NextApiRequest
   ): Promise<CreatedComment> => {
@@ -71,6 +76,11 @@ export default class CommentsService extends DBPagination {
     }
   }
 
+  /**
+   * Get comments from post id
+   * @param req `NextApiRequest`
+   * @returns `GetPostComments`
+   */
   static getCommentsFromPostId = async (
     req: NextApiRequest
   ): Promise<GetPostComments> => {
@@ -96,6 +106,10 @@ export default class CommentsService extends DBPagination {
     }
   }
 
+  /**
+   * Get comments with pagination
+   * @returns `PaginationGetComments`
+   */
   getComments = async (): Promise<PaginationGetComments> => {
     const comments = await CommentDB.getComments(this.getPagination())
     if (comments instanceof Error) {
@@ -113,6 +127,11 @@ export default class CommentsService extends DBPagination {
     }
   }
 
+  /**
+   * Delete comment by id
+   * @param req `NextApiRequest`
+   * @returns `DeletedComment`
+   */
   static deleteComment = async (
     req: NextApiRequest
   ): Promise<DeletedComment> => {

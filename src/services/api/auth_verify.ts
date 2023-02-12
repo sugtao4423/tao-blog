@@ -19,6 +19,11 @@ const errorMessage = (e: unknown): string => {
 export default class AuthVerifyService {
   static MethodNotAllowedError: AuthVerify = error(405, 'Method Not Allowed')
 
+  /**
+   * Verify token
+   * @param authorization Http authorization header
+   * @returns `AuthVerify`
+   */
   static verify = (authorization: string | undefined): AuthVerify => {
     if (!authorization || !authorization.startsWith('Bearer ')) {
       return error(403, 'No authorization header')

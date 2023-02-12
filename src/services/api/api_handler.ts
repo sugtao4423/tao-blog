@@ -4,6 +4,11 @@ import AuthVerifyService from './auth_verify'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
+/**
+ * Verify authorization header if not `GET` method
+ * @param handler Next.js API handler
+ * @returns Wrapped Next.js API handler
+ */
 export const withModifyAuth = (
   handler: (req: NextApiRequest, res: NextApiResponse) => void
 ) => {

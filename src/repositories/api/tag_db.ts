@@ -14,6 +14,11 @@ import DatabaseUpdateError from './errors/db_update'
 type RowType = Selection<From<DatabaseTables, 'tags'>, 'tags', keyof TagTable>
 
 export default class TagDB {
+  /**
+   * Create tag in database
+   * @param tag Tag to create
+   * @returns `null` if success, `Error` if failed
+   */
   static createTag = async (tag: CreateTag): Promise<null | Error> => {
     try {
       await db
@@ -29,12 +34,22 @@ export default class TagDB {
     }
   }
 
+  /**
+   * Convert db row to `GetTag`
+   * @param row Row to convert
+   * @returns `GetTag`
+   */
   private static convertRow = (row: RowType): GetTag => ({
     id: row.id,
     name: row.name,
     createdAt: DBTime.dbDatetime2Unixtime(row.createdAt),
   })
 
+  /**
+   * Get tags from database
+   * @param pagination if null, get all tags
+   * @returns `GetTag[]` if success, `Error` if failed
+   */
   static getTags = async (
     pagination: DatabasePagination | null
   ): Promise<GetTag[] | Error> => {
@@ -51,6 +66,12 @@ export default class TagDB {
     }
   }
 
+  /**
+   * Update tag in database by id
+   * @param id Target tag id
+   * @param tag Tag to update
+   * @returns `null` if success, `Error` if failed
+   */
   static updateTag = async (
     id: number,
     tag: UpdateTag

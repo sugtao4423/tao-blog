@@ -2,6 +2,11 @@ import db from './database'
 import DatabaseSelectError from './errors/db_select'
 
 export default class PostDB {
+  /**
+   * Check if post is commentable
+   * @param postId Target post id
+   * @returns commentable boolean if success, `Error` if failed
+   */
   static isPostCommentable = async (
     postId: number
   ): Promise<boolean | Error> => {

@@ -5,6 +5,11 @@ import DBTime from './db_time'
 import DatabaseSelectError from './errors/db_select'
 
 export default class UserDB {
+  /**
+   * Get user by email from database
+   * @param email Target email
+   * @returns `LoginUser` if success, `null` if not found, `Error` if failed
+   */
   static getUserByEmail = async (
     email: string
   ): Promise<LoginUser | null | Error> => {
@@ -29,6 +34,11 @@ export default class UserDB {
     }
   }
 
+  /**
+   * Get user by id from database
+   * @param id Target id
+   * @returns `GetUser` if success, `null` if not found, `Error` if failed
+   */
   static getUserById = async (id: number): Promise<GetUser | null | Error> => {
     try {
       const user = await db

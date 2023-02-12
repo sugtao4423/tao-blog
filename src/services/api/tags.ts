@@ -18,6 +18,11 @@ const error = (code: number, message: string): CreatedTag => ({
 export default class TagsService extends DBPagination {
   static MethodNotAllowedError: CreatedTag = error(405, 'Method Not Allowed')
 
+  /**
+   * Create tag
+   * @param req `NextApiRequest`
+   * @returns `CreatedTag`
+   */
   static createTag = async (req: NextApiRequest): Promise<CreatedTag> => {
     const tag = TagValidation.createTag(req)
     if (tag instanceof Error) {
@@ -35,6 +40,10 @@ export default class TagsService extends DBPagination {
     }
   }
 
+  /**
+   * Get tags with pagination
+   * @returns `PaginationGetTags`
+   */
   getTags = async (): Promise<PaginationGetTags> => {
     const tags = await TagDB.getTags(this.getPagination())
     if (tags instanceof Error) {
@@ -52,6 +61,11 @@ export default class TagsService extends DBPagination {
     }
   }
 
+  /**
+   * Update tag by id
+   * @param req `NextApiRequest`
+   * @returns `UpdatedTag`
+   */
   static updateTag = async (req: NextApiRequest): Promise<UpdatedTag> => {
     const tag = TagValidation.updateTag(req)
     if (tag instanceof Error) {
