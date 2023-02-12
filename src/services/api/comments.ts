@@ -6,7 +6,6 @@ import {
 } from '@/models/entities/api/comment'
 import CommentDB from '@/repositories/api/comment_db'
 import DBPagination from '@/repositories/api/db_pagination'
-import PostDB from '@/repositories/api/post_db'
 import CommentValidation from '@/repositories/api/validation/comment'
 import { NextApiRequest } from 'next'
 import { getClientIp } from 'request-ip'
@@ -35,27 +34,6 @@ export default class CommentsService extends DBPagination {
     const comment = await CommentValidation.createComment(req)
     if (comment instanceof Error) {
       return error(400, comment.message)
-    }
-
-    const isPostCommentable = await PostDB.isPostCommentable(comment.postId)
-    if (isPostCommentable instanceof Error) {
-      return error(500, isPostCommentable.message)
-    }
-    if (!isPostCommentable) {
-      return error(400, 'Post is not commentable')
-    }
-
-    if (comment.parentId) {
-      const isValidReply = await CommentDB.isValidReplyComment(
-        comment.postId,
-        comment.parentId
-      )
-      if (isValidReply instanceof Error) {
-        return error(500, isValidReply.message)
-      }
-      if (!isValidReply) {
-        return error(400, 'Invalid reply comment')
-      }
     }
 
     const authorIp = getClientIp(req) ?? ''

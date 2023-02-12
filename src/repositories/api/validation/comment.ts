@@ -1,5 +1,7 @@
 import { CreateComment } from '@/models/entities/api/comment'
 import { NextApiRequest } from 'next'
+import CommentDB from '../comment_db'
+import PostDB from '../post_db'
 import UserDB from '../user_db'
 import CommonValidation from './common'
 
@@ -43,21 +45,13 @@ export default class CommentValidation {
       return postId
     }
 
-    const comment = req.body as CreateComment
+    const comment = {
+      ...(req.body as CreateComment),
+      postId,
+    }
     if (!comment.content) {
       return new Error('Invalid content')
     }
-
-    if (comment.authorId) {
-      const user = await UserDB.getUserById(comment.authorId)
-      if (!user || user instanceof Error) {
-        return new Error('Invalid author id')
-      }
-      return { postId: Number(postId), ...comment }
-    }
-
-    // TODO: check exists post
-
     if (!comment.author) {
       return new Error('Invalid author')
     }
@@ -68,6 +62,29 @@ export default class CommentValidation {
       return new Error('Invalid author email')
     }
 
-    return { postId: Number(postId), ...comment }
+    if (comment.authorId) {
+      const user = await UserDB.getUserById(comment.authorId)
+      if (!user || user instanceof Error) {
+        return new Error('Invalid author id')
+      }
+      return comment
+    }
+
+    const isPostCommentable = await PostDB.isPostCommentable(postId)
+    if (!isPostCommentable || isPostCommentable instanceof Error) {
+      return new Error('Post is not commentable')
+    }
+
+    if (comment.parentId) {
+      const isValidReply = await CommentDB.isValidReplyComment(
+        comment.postId,
+        comment.parentId
+      )
+      if (!isValidReply || isValidReply instanceof Error) {
+        return new Error('Invalid reply comment')
+      }
+    }
+
+    return comment
   }
 }
