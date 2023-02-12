@@ -17,3 +17,5 @@ export type CreatedTag = CommonResponse<'OK' | 'NG'>
 export type UpdateTag = CreateTag
 
 export type UpdatedTag = CreatedTag
+
+export type DeletedTag = CreatedTag

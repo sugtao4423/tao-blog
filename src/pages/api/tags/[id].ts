@@ -12,6 +12,11 @@ const handler = async (
     res.status(updated.code).json(updated)
     return
   }
+  if (req.method === 'DELETE') {
+    const deleted = await TagsService.deleteTag(req)
+    res.status(deleted.code).json(deleted)
+    return
+  }
 
   const error = TagsService.MethodNotAllowedError
   res.status(error.code).json(error)

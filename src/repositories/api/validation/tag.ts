@@ -39,4 +39,17 @@ export default class TagValidation {
       name: tag.name,
     }
   }
+
+  /**
+   * Validate delete tag id
+   * @param req `NextApiRequest`
+   * @returns To delete tag id
+   */
+  static deleteTagId = (req: NextApiRequest): number | Error => {
+    const { id } = req.query
+    if (!CommonValidation.isNumber(id)) {
+      return new Error('Invalid id')
+    }
+    return Number(id)
+  }
 }

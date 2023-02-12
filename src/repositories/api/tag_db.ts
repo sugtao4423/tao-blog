@@ -4,7 +4,7 @@ import {
   DatabaseTables,
   TagTable,
 } from '@/models/entities/database'
-import { Selection } from 'kysely'
+import { Selection, sql } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
 import DBTime from './db_time'
@@ -87,6 +87,29 @@ export default class TagDB {
       return null
     } catch (e) {
       return new DatabaseUpdateError(e, 'Update tag error')
+    }
+  }
+
+  /**
+   * Delete tag in database by id
+   * @param id Target tag id
+   * @returns `null` if success, `Error` if failed
+   */
+  static deleteTag = async (id: number): Promise<null | Error> => {
+    try {
+      await db
+        .deleteFrom('tags')
+        .where('id', '=', id)
+        .whereNotExists((qb) =>
+          qb
+            .selectFrom('posts')
+            .select('id')
+            .where(sql`JSON_CONTAINS(tagIds, ${id})`)
+        )
+        .executeTakeFirstOrThrow()
+      return null
+    } catch (e) {
+      return new DatabaseUpdateError(e, 'Delete tag error')
     }
   }
 }

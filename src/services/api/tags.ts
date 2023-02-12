@@ -1,5 +1,6 @@
 import {
   CreatedTag,
+  DeletedTag,
   PaginationGetTags,
   UpdatedTag,
 } from '@/models/entities/api/tag'
@@ -75,6 +76,28 @@ export default class TagsService extends DBPagination {
     const updated = await TagDB.updateTag(tag.id, tag)
     if (updated instanceof Error) {
       return error(500, updated.message)
+    }
+
+    return {
+      code: 200,
+      data: 'OK',
+    }
+  }
+
+  /**
+   * Delete tag by id
+   * @param req `NextApiRequest`
+   * @returns `DeletedTag`
+   */
+  static deleteTag = async (req: NextApiRequest): Promise<DeletedTag> => {
+    const tagId = TagValidation.deleteTagId(req)
+    if (tagId instanceof Error) {
+      return error(400, tagId.message)
+    }
+
+    const deleted = await TagDB.deleteTag(tagId)
+    if (deleted instanceof Error) {
+      return error(500, deleted.message)
     }
 
     return {
