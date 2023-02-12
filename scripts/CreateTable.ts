@@ -71,7 +71,7 @@ const createTables = async () => {
     .addColumn('abstract', 'text', (col) => col.notNull())
     .addColumn('thumbnailUrl', 'text')
     .addColumn('authorId', 'integer', (col) => col.notNull())
-    .addColumn('tagIds', 'text')
+    .addColumn('tagIds', 'json', (col) => col.notNull().defaultTo('[]'))
     .addColumn('status', sql`ENUM('publish', 'draft', 'hidden')`, (col) =>
       col.notNull()
     )
