@@ -30,14 +30,15 @@ export default class TagsService extends DBPagination {
       return error(400, tag.message)
     }
 
-    const created = await TagDB.createTag(tag)
-    if (created instanceof Error) {
-      return error(500, created.message)
+    const createdCount = await TagDB.createTag(tag)
+    if (createdCount instanceof Error) {
+      return error(500, createdCount.message)
     }
 
+    const isCreated = createdCount > 0
     return {
-      code: 201,
-      data: 'OK',
+      code: isCreated ? 201 : 409,
+      data: isCreated ? 'OK' : 'NG',
     }
   }
 
@@ -73,14 +74,15 @@ export default class TagsService extends DBPagination {
       return error(400, tag.message)
     }
 
-    const updated = await TagDB.updateTag(tag.id, tag)
-    if (updated instanceof Error) {
-      return error(500, updated.message)
+    const updatedCount = await TagDB.updateTag(tag.id, tag)
+    if (updatedCount instanceof Error) {
+      return error(500, updatedCount.message)
     }
 
+    const isUpdated = updatedCount > 0
     return {
-      code: 200,
-      data: 'OK',
+      code: isUpdated ? 200 : 409,
+      data: isUpdated ? 'OK' : 'NG',
     }
   }
 
@@ -95,14 +97,15 @@ export default class TagsService extends DBPagination {
       return error(400, tagId.message)
     }
 
-    const deleted = await TagDB.deleteTag(tagId)
-    if (deleted instanceof Error) {
-      return error(500, deleted.message)
+    const deletedCount = await TagDB.deleteTag(tagId)
+    if (deletedCount instanceof Error) {
+      return error(500, deletedCount.message)
     }
 
+    const isDeleted = deletedCount > 0
     return {
-      code: 200,
-      data: 'OK',
+      code: isDeleted ? 200 : 409,
+      data: isDeleted ? 'OK' : 'NG',
     }
   }
 }

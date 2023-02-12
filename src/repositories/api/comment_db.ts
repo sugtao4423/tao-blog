@@ -67,16 +67,16 @@ export default class CommentDB {
   /**
    * Create comment in database
    * @param param Create comment parameters
-   * @returns `null` if success, `Error` if failed
+   * @returns Created comment count if success, error if failed
    */
   static createComment = async ({
     postId,
     authorIp,
     authorUserAgent,
     comment,
-  }: CreateType): Promise<null | Error> => {
+  }: CreateType): Promise<bigint | Error> => {
     try {
-      await db
+      const result = await db
         .insertInto('comments')
         .values({
           parentId: comment.parentId,
@@ -91,7 +91,8 @@ export default class CommentDB {
           createdAt: DBTime.nowDbDatetime(),
         })
         .executeTakeFirstOrThrow()
-      return null
+
+      return result.numInsertedOrUpdatedRows ?? BigInt(0)
     } catch (e) {
       return new DatabaseInsertError(e, 'Create comment error')
     }
@@ -166,18 +167,19 @@ export default class CommentDB {
   /**
    * Delete comment from database
    * @param id Target comment id
-   * @returns `null` if success, `Error` if failed
+   * @returns Deleted comment count if success, `Error` if failed
    */
-  static deleteComment = async (id: number): Promise<null | Error> => {
+  static deleteComment = async (id: number): Promise<bigint | Error> => {
     try {
-      await db
+      const result = await db
         .deleteFrom('comments')
         .where('id', '=', id)
         .whereNotExists((qb) =>
           qb.selectFrom('comments').select('id').where('parentId', '=', id)
         )
         .executeTakeFirstOrThrow()
-      return null
+
+      return result.numDeletedRows
     } catch (e) {
       return new DatabaseDeleteError(e, 'Delete comment error')
     }

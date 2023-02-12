@@ -17,18 +17,20 @@ export default class TagDB {
   /**
    * Create tag in database
    * @param tag Tag to create
-   * @returns `null` if success, `Error` if failed
+   * @returns Created tag count if success, `Error` if failed
    */
-  static createTag = async (tag: CreateTag): Promise<null | Error> => {
+  static createTag = async (tag: CreateTag): Promise<bigint | Error> => {
     try {
-      await db
+      const result = await db
         .insertInto('tags')
+        .ignore()
         .values({
           name: tag.name,
           createdAt: DBTime.nowDbDatetime(),
         })
         .executeTakeFirstOrThrow()
-      return null
+
+      return result.numInsertedOrUpdatedRows ?? BigInt(0)
     } catch (e) {
       return new DatabaseSelectError(e, 'Create tag error')
     }
@@ -70,21 +72,22 @@ export default class TagDB {
    * Update tag in database by id
    * @param id Target tag id
    * @param tag Tag to update
-   * @returns `null` if success, `Error` if failed
+   * @returns Updated tag count if success, `Error` if failed
    */
   static updateTag = async (
     id: number,
     tag: UpdateTag
-  ): Promise<null | Error> => {
+  ): Promise<bigint | Error> => {
     try {
-      await db
+      const result = await db
         .updateTable('tags')
         .set({
           name: tag.name,
         })
         .where('id', '=', id)
         .executeTakeFirstOrThrow()
-      return null
+
+      return result.numUpdatedRows
     } catch (e) {
       return new DatabaseUpdateError(e, 'Update tag error')
     }
@@ -93,11 +96,11 @@ export default class TagDB {
   /**
    * Delete tag in database by id
    * @param id Target tag id
-   * @returns `null` if success, `Error` if failed
+   * @returns Deleted tag count if success, `Error` if failed
    */
-  static deleteTag = async (id: number): Promise<null | Error> => {
+  static deleteTag = async (id: number): Promise<bigint | Error> => {
     try {
-      await db
+      const result = await db
         .deleteFrom('tags')
         .where('id', '=', id)
         .whereNotExists((qb) =>
@@ -107,7 +110,8 @@ export default class TagDB {
             .where(sql`JSON_CONTAINS(tagIds, ${id})`)
         )
         .executeTakeFirstOrThrow()
-      return null
+
+      return result.numDeletedRows
     } catch (e) {
       return new DatabaseUpdateError(e, 'Delete tag error')
     }

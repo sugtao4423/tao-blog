@@ -38,19 +38,20 @@ export default class CommentsService extends DBPagination {
 
     const authorIp = getClientIp(req) ?? ''
     const authorUserAgent = req.headers['user-agent'] ?? ''
-    const created = await CommentDB.createComment({
+    const createdCount = await CommentDB.createComment({
       postId: comment.postId,
       authorIp,
       authorUserAgent,
       comment,
     })
-    if (created instanceof Error) {
-      return error(500, created.message)
+    if (createdCount instanceof Error) {
+      return error(500, createdCount.message)
     }
 
+    const isCreated = createdCount > 0
     return {
-      code: 201,
-      data: 'OK',
+      code: isCreated ? 201 : 409,
+      data: isCreated ? 'OK' : 'NG',
     }
   }
 
@@ -118,14 +119,15 @@ export default class CommentsService extends DBPagination {
       return error(400, id.message)
     }
 
-    const deleted = await CommentDB.deleteComment(id)
-    if (deleted instanceof Error) {
-      return error(500, deleted.message)
+    const deletedCount = await CommentDB.deleteComment(id)
+    if (deletedCount instanceof Error) {
+      return error(500, deletedCount.message)
     }
 
+    const isDeleted = deletedCount > 0
     return {
-      code: 200,
-      data: 'OK',
+      code: isDeleted ? 200 : 409,
+      data: isDeleted ? 'OK' : 'NG',
     }
   }
 }
