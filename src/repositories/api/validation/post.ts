@@ -1,8 +1,22 @@
 import { CreatePost } from '@/models/entities/api/post'
 import { NextApiRequest } from 'next'
 import TagDB from '../tag_db'
+import CommonValidation from './common'
 
 export default class PostValidation {
+  /**
+   * Validate id query
+   * @param req `NextApiRequest`
+   * @returns `number | Error`
+   */
+  static id = (req: NextApiRequest): number | Error => {
+    const { id } = req.query
+    if (!CommonValidation.isNumber(id)) {
+      return new Error('Invalid id')
+    }
+    return Number(id)
+  }
+
   /**
    * Validate `CreatePost`
    * @param req `NextApiRequest`

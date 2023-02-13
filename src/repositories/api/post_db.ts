@@ -151,4 +151,24 @@ export default class PostDB {
       return new DatabaseSelectError(e, 'Get post error')
     }
   }
+
+  /**
+   * Get post by id from database
+   * @param id Post id
+   * @returns `GetPost` if success, `Error` if failed
+   */
+  static getPostById = async (id: number): Promise<GetPost | Error> => {
+    try {
+      const post = await db
+        .selectFrom('posts')
+        .innerJoin('users', 'posts.authorId', 'users.id')
+        .select(selectTarget)
+        .where('posts.id', '=', id)
+        .executeTakeFirstOrThrow()
+
+      return (await PostDB.convertRows([post]))[0]
+    } catch (e) {
+      return new DatabaseSelectError(e, 'Get post error')
+    }
+  }
 }

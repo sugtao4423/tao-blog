@@ -1,4 +1,8 @@
-import { CreatedPost, PaginationGetPosts } from '@/models/entities/api/post'
+import {
+  CreatedPost,
+  GetSpecificPost,
+  PaginationGetPosts,
+} from '@/models/entities/api/post'
 import DBPagination from '@/repositories/api/db_pagination'
 import PostDB from '@/repositories/api/post_db'
 import PostValidation from '@/repositories/api/validation/post'
@@ -55,6 +59,36 @@ export default class PostsService extends DBPagination {
       code: 200,
       pagination: this.getApiPagination(),
       data: posts,
+    }
+  }
+
+  /**
+   * Get post by id
+   * @param req `NextApiRequest`
+   * @returns `GetPost`
+   */
+  static getPostById = async (
+    req: NextApiRequest
+  ): Promise<GetSpecificPost> => {
+    const id = PostValidation.id(req)
+    if (id instanceof Error) {
+      return {
+        ...error(400, id.message),
+        data: null,
+      }
+    }
+
+    const post = await PostDB.getPostById(id)
+    if (post instanceof Error) {
+      return {
+        ...error(500, post.message),
+        data: null,
+      }
+    }
+
+    return {
+      code: 200,
+      data: post,
     }
   }
 }

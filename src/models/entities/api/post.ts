@@ -16,6 +16,8 @@ export type GetPost = {
   updatedAt: number
 }
 
+export type GetSpecificPost = CommonResponse<GetPost | null>
+
 export type PaginationGetPosts = PaginationCommonResponse<GetPost>
 
 export type CreatePost = {
