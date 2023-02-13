@@ -71,6 +71,30 @@ export default class TagDB {
   }
 
   /**
+   * Get tags by id(s) from database
+   * @param ids Tag id(s)
+   * @returns `GetTag[]` if success, `Error` if failed
+   */
+  static getTagsByIds = async (
+    ids: number | number[]
+  ): Promise<GetTag[] | Error> => {
+    if (Array.isArray(ids) && ids.length <= 0) return []
+
+    const tagIds = Array.isArray(ids) ? ids : [ids]
+    try {
+      let query = db.selectFrom('tags').selectAll()
+      tagIds.forEach((id) => {
+        query = query.orWhere('id', '=', id)
+      })
+      const tags = await query.execute()
+
+      return tags.map(TagDB.convertRow)
+    } catch (e) {
+      return new DatabaseSelectError(e, 'Get tags by ids error')
+    }
+  }
+
+  /**
    * Update tag in database by id
    * @param id Target tag id
    * @param tag Tag to update

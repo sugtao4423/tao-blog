@@ -42,7 +42,7 @@ export type PostTable = {
   abstract: string
   thumbnailUrl: string | null
   authorId: number
-  tagIds: number[]
+  tagIds: string
   status: 'publish' | 'draft' | 'hidden'
   commentable: boolean
   createdAt: string
