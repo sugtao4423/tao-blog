@@ -8,6 +8,8 @@ import { Selection, sql } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
 import DBTime from './db_time'
+import DatabaseDeleteError from './errors/db_delete'
+import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
 import DatabaseUpdateError from './errors/db_update'
 
@@ -32,7 +34,7 @@ export default class TagDB {
 
       return result.numInsertedOrUpdatedRows ?? BigInt(0)
     } catch (e) {
-      return new DatabaseSelectError(e, 'Create tag error')
+      return new DatabaseInsertError(e, 'Create tag error')
     }
   }
 
@@ -113,7 +115,7 @@ export default class TagDB {
 
       return result.numDeletedRows
     } catch (e) {
-      return new DatabaseUpdateError(e, 'Delete tag error')
+      return new DatabaseDeleteError(e, 'Delete tag error')
     }
   }
 }
