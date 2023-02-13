@@ -146,7 +146,7 @@ export default class PostDB {
       }
       const posts = await query.execute()
 
-      return PostDB.convertRows(posts)
+      return await PostDB.convertRows(posts)
     } catch (e) {
       return new DatabaseSelectError(e, 'Get post error')
     }
