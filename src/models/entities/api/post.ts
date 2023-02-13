@@ -1,4 +1,4 @@
-import { CommonResponse } from './common_response'
+import { CommonResponse, PaginationCommonResponse } from './common_response'
 import { GetTag } from './tag'
 import { GetUser } from './user'
 
@@ -15,6 +15,8 @@ export type GetPost = {
   createdAt: number
   updatedAt: number
 }
+
+export type PaginationGetPosts = PaginationCommonResponse<GetPost>
 
 export type CreatePost = {
   title: string

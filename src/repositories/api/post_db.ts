@@ -1,8 +1,36 @@
-import { CreatePost } from '@/models/entities/api/post'
+import { CreatePost, GetPost } from '@/models/entities/api/post'
+import { GetTag } from '@/models/entities/api/tag'
+import { DatabasePagination, DatabaseTables } from '@/models/entities/database'
+import { Selection } from 'kysely'
+import { From } from 'kysely/dist/cjs/parser/table-parser'
 import db from './database'
 import DBTime from './db_time'
 import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
+import TagDB from './tag_db'
+
+const selectTarget = [
+  'posts.id as postId',
+  'posts.title as postTitle',
+  'posts.content as postContent',
+  'posts.abstract as postAbstract',
+  'posts.thumbnailUrl as postThumbnailUrl',
+  'posts.tagIds as postTagIds',
+  'posts.status as postStatus',
+  'posts.commentable as postCommentable',
+  'posts.createdAt as postCreatedAt',
+  'posts.updatedAt as postUpdatedAt',
+  'users.id as authorId',
+  'users.name as authorName',
+  'users.url as authorUrl',
+  'users.createdAt as authorCreatedAt',
+] as const
+
+type RowType = Selection<
+  From<DatabaseTables, 'posts'>,
+  'posts' | 'users',
+  (typeof selectTarget)[number]
+>
 
 export default class PostDB {
   /**
@@ -53,6 +81,74 @@ export default class PostDB {
       return result.numInsertedOrUpdatedRows ?? BigInt(0)
     } catch (e) {
       return new DatabaseInsertError(e, 'Create post error')
+    }
+  }
+
+  /**
+   * Convert rows to `GetPost[]`
+   * @param rows Rows to convert
+   * @throws `Error` if get tag failed
+   * @returns `GetPost[]`
+   */
+  private static convertRows = async (rows: RowType[]): Promise<GetPost[]> => {
+    const inPostTagIds = rows.flatMap(
+      (row) => JSON.parse(row.postTagIds) as number[]
+    )
+    const uniqueTagIds = Array.from(new Set(inPostTagIds))
+    const tags = await TagDB.getTagsByIds(uniqueTagIds)
+    if (tags instanceof Error) throw tags
+
+    const findTags = (postTagIds: string): GetTag[] =>
+      (JSON.parse(postTagIds) as number[]).map((id) => {
+        const tag = tags.find((t) => t.id === id)
+        if (!tag) throw new Error('Tag not found')
+        return tag
+      })
+
+    return rows.map((row) => ({
+      id: row.postId,
+      title: row.postTitle,
+      content: row.postContent,
+      abstract: row.postAbstract,
+      thumbnailUrl: row.postThumbnailUrl,
+      author: {
+        id: row.authorId,
+        name: row.authorName,
+        url: row.authorUrl,
+        createdAt: DBTime.dbDatetime2Unixtime(row.authorCreatedAt),
+      },
+      tags: findTags(row.postTagIds),
+      status: row.postStatus,
+      commentable: Boolean(row.postCommentable),
+      createdAt: DBTime.dbDatetime2Unixtime(row.postCreatedAt),
+      updatedAt: DBTime.dbDatetime2Unixtime(row.postUpdatedAt),
+    }))
+  }
+
+  /**
+   * Get posts from database
+   * @param pagination if null, get all posts
+   * @returns `GetPost[]` if success, `Error` if failed
+   */
+  static getPosts = async (
+    pagination: DatabasePagination | null
+  ): Promise<GetPost[] | Error> => {
+    try {
+      // Not supported `LEFT JOIN tags ON JSON_SEARCH(...)` in kysely.
+      // Raw query is too long, so call 2 queries.
+      let query = db
+        .selectFrom('posts')
+        .innerJoin('users', 'posts.authorId', 'users.id')
+        .select(selectTarget)
+        .orderBy('posts.createdAt', 'desc')
+      if (pagination) {
+        query = query.offset(pagination.offset).limit(pagination.limit)
+      }
+      const posts = await query.execute()
+
+      return PostDB.convertRows(posts)
+    } catch (e) {
+      return new DatabaseSelectError(e, 'Get post error')
     }
   }
 }
