@@ -11,6 +11,7 @@ import DBTime from './db_time'
 import DatabaseDeleteError from './errors/db_delete'
 import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
+import GravatarUrl from './gravatar'
 
 type CreateType = {
   postId: number
@@ -25,6 +26,7 @@ const selectTarget = [
   'comments.postId as commentPostId',
   'comments.authorId as commentAuthorId',
   'comments.authorName as commentAuthorName',
+  'comments.authorEmail as commentAuthorEmail',
   'comments.authorUrl as commentAuthorUrl',
   'users.name as userName',
   'users.email as userEmail',
@@ -110,6 +112,7 @@ export default class CommentDB {
     author: {
       id: row.commentAuthorId,
       name: row.commentAuthorName ?? row.userName,
+      gravatarUrl: GravatarUrl(row.commentAuthorEmail ?? row.userEmail),
       url: row.commentAuthorUrl ?? row.userUrl,
     },
     content: row.commentContent,

@@ -7,6 +7,7 @@ export type GetComment = {
   author: {
     id: number | null
     name: string
+    gravatarUrl: string
     url: string | null
   } | null
   content: string

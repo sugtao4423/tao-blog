@@ -3,6 +3,7 @@ import { LoginUser } from '@/models/entities/database'
 import db from './database'
 import DBTime from './db_time'
 import DatabaseSelectError from './errors/db_select'
+import GravatarUrl from './gravatar'
 
 export default class UserDB {
   /**
@@ -51,6 +52,7 @@ export default class UserDB {
       return {
         id: user.id,
         name: user.name,
+        gravatarUrl: GravatarUrl(user.email),
         url: user.url,
         createdAt: DBTime.toUnix(user.createdAt),
       }

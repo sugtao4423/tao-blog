@@ -10,6 +10,7 @@ import DatabaseDeleteError from './errors/db_delete'
 import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
 import DatabaseUpdateError from './errors/db_update'
+import GravatarUrl from './gravatar'
 import TagDB from './tag_db'
 
 const selectTarget = [
@@ -25,6 +26,7 @@ const selectTarget = [
   'posts.updatedAt as postUpdatedAt',
   'users.id as authorId',
   'users.name as authorName',
+  'users.email as authorEmail',
   'users.url as authorUrl',
   'users.createdAt as authorCreatedAt',
 ] as const
@@ -117,6 +119,7 @@ export default class PostDB {
       author: {
         id: row.authorId,
         name: row.authorName,
+        gravatarUrl: GravatarUrl(row.authorEmail),
         url: row.authorUrl,
         createdAt: DBTime.toUnix(row.authorCreatedAt),
       },
