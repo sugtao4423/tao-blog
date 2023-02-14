@@ -29,10 +29,8 @@ export default class TagValidation {
       return new Error('Invalid id')
     }
 
-    const tag = req.body as UpdateTag
-    if (!tag.name) {
-      return new Error('Invalid name')
-    }
+    const tag = TagValidation.createTag(req)
+    if (tag instanceof Error) return tag
 
     return {
       id: Number(id),
