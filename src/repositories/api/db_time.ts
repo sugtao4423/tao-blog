@@ -7,7 +7,7 @@ export default class DBTime {
   /**
    * @returns current database datetime
    */
-  static nowDbDatetime = (): string => {
+  static now = (): string => {
     return dayjs().utc().format('YYYY-MM-DD HH:mm:ss')
   }
 
@@ -16,7 +16,7 @@ export default class DBTime {
    * @param dbDatetime database datetime
    * @returns unixtime
    */
-  static dbDatetime2Unixtime = (dbDatetime: string): number => {
+  static toUnix = (dbDatetime: string): number => {
     return dayjs(dbDatetime).unix()
   }
 
@@ -25,7 +25,7 @@ export default class DBTime {
    * @param unixtime unixtime
    * @returns database datetime
    */
-  static unixtime2DbDatetime = (unixtime: number): string => {
+  static toDatetime = (unixtime: number): string => {
     return dayjs.unix(unixtime).utc().format('YYYY-MM-DD HH:mm:ss')
   }
 }

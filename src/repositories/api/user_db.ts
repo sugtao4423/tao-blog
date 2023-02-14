@@ -27,7 +27,7 @@ export default class UserDB {
         email: user.email,
         hashedPassword: user.password,
         url: user.url,
-        createdAt: DBTime.dbDatetime2Unixtime(user.createdAt),
+        createdAt: DBTime.toUnix(user.createdAt),
       }
     } catch (e) {
       return new DatabaseSelectError(e, 'Select user error')
@@ -52,7 +52,7 @@ export default class UserDB {
         id: user.id,
         name: user.name,
         url: user.url,
-        createdAt: DBTime.dbDatetime2Unixtime(user.createdAt),
+        createdAt: DBTime.toUnix(user.createdAt),
       }
     } catch (e) {
       return new DatabaseSelectError(e, 'Select user error')

@@ -28,7 +28,7 @@ export default class TagDB {
         .ignore()
         .values({
           name: tag.name,
-          createdAt: DBTime.nowDbDatetime(),
+          createdAt: DBTime.now(),
         })
         .executeTakeFirstOrThrow()
 
@@ -46,7 +46,7 @@ export default class TagDB {
   private static convertRow = (row: RowType): GetTag => ({
     id: row.id,
     name: row.name,
-    createdAt: DBTime.dbDatetime2Unixtime(row.createdAt),
+    createdAt: DBTime.toUnix(row.createdAt),
   })
 
   /**

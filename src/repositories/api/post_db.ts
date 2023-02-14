@@ -76,8 +76,8 @@ export default class PostDB {
           tagIds: JSON.stringify(post.tagIds),
           status: post.status,
           commentable: post.commentable,
-          createdAt: DBTime.nowDbDatetime(),
-          updatedAt: DBTime.nowDbDatetime(),
+          createdAt: DBTime.now(),
+          updatedAt: DBTime.now(),
         })
         .executeTakeFirstOrThrow()
 
@@ -118,13 +118,13 @@ export default class PostDB {
         id: row.authorId,
         name: row.authorName,
         url: row.authorUrl,
-        createdAt: DBTime.dbDatetime2Unixtime(row.authorCreatedAt),
+        createdAt: DBTime.toUnix(row.authorCreatedAt),
       },
       tags: findTags(row.postTagIds),
       status: row.postStatus,
       commentable: Boolean(row.postCommentable),
-      createdAt: DBTime.dbDatetime2Unixtime(row.postCreatedAt),
-      updatedAt: DBTime.dbDatetime2Unixtime(row.postUpdatedAt),
+      createdAt: DBTime.toUnix(row.postCreatedAt),
+      updatedAt: DBTime.toUnix(row.postUpdatedAt),
     }))
   }
 
@@ -197,7 +197,7 @@ export default class PostDB {
           tagIds: JSON.stringify(post.tagIds),
           status: post.status,
           commentable: post.commentable,
-          updatedAt: DBTime.nowDbDatetime(),
+          updatedAt: DBTime.now(),
         })
         .where('id', '=', id)
         .executeTakeFirstOrThrow()

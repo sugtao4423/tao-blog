@@ -88,7 +88,7 @@ export default class CommentDB {
           authorIp,
           authorUserAgent,
           content: comment.content,
-          createdAt: DBTime.nowDbDatetime(),
+          createdAt: DBTime.now(),
         })
         .executeTakeFirstOrThrow()
 
@@ -113,7 +113,7 @@ export default class CommentDB {
       url: row.commentAuthorUrl ?? row.userUrl,
     },
     content: row.commentContent,
-    createdAt: DBTime.dbDatetime2Unixtime(row.commentCreatedAt),
+    createdAt: DBTime.toUnix(row.commentCreatedAt),
   })
 
   /**
