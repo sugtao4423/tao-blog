@@ -10,7 +10,7 @@ export type GetComment = {
     url: string | null
   } | null
   content: string
-  createdAt: number
+  readonly createdAt: number
 }
 
 export type GetPostComments = CommonResponse<GetComment[]>

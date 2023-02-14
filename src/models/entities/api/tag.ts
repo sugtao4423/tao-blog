@@ -3,7 +3,7 @@ import { CommonResponse, PaginationCommonResponse } from './common_response'
 export type GetTag = {
   readonly id: number
   name: string
-  createdAt: number
+  readonly createdAt: number
 }
 
 export type PaginationGetTags = PaginationCommonResponse<GetTag>

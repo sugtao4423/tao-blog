@@ -12,8 +12,8 @@ export type GetPost = {
   tags: GetTag[]
   status: 'publish' | 'draft' | 'hidden'
   commentable: boolean
-  createdAt: number
-  updatedAt: number
+  readonly createdAt: number
+  readonly updatedAt: number
 }
 
 export type GetSpecificPost = CommonResponse<GetPost | null>
