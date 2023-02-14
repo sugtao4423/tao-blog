@@ -1,5 +1,6 @@
 import {
   CreatedPost,
+  DeletedPost,
   GetSpecificPost,
   PaginationGetPosts,
   UpdatedPost,
@@ -113,6 +114,29 @@ export default class PostsService extends DBPagination {
     return {
       code: isUpdated ? 200 : 409,
       data: isUpdated ? 'OK' : 'NG',
+    }
+  }
+
+  /**
+   * Delete post by id
+   * @param req `NextApiRequest`
+   * @returns `DeletedPost`
+   */
+  static deletePost = async (req: NextApiRequest): Promise<DeletedPost> => {
+    const id = PostValidation.id(req)
+    if (id instanceof Error) {
+      return error(400, id.message)
+    }
+
+    const deletedCount = await PostDB.deletePost(id)
+    if (deletedCount instanceof Error) {
+      return error(500, deletedCount.message)
+    }
+
+    const isDeleted = deletedCount > 0
+    return {
+      code: isDeleted ? 200 : 409,
+      data: isDeleted ? 'OK' : 'NG',
     }
   }
 }

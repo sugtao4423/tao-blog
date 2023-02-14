@@ -184,4 +184,24 @@ export default class CommentDB {
       return new DatabaseDeleteError(e, 'Delete comment error')
     }
   }
+
+  /**
+   * Delete comments by postId from database
+   * @param postId Target post id
+   * @returns Deleted comment count if success, `Error` if failed
+   */
+  static deleteCommentsByPostId = async (
+    postId: number
+  ): Promise<bigint | Error> => {
+    try {
+      const result = await db
+        .deleteFrom('comments')
+        .where('postId', '=', postId)
+        .executeTakeFirstOrThrow()
+
+      return result.numDeletedRows
+    } catch (e) {
+      return new DatabaseDeleteError(e, 'Delete comments error')
+    }
+  }
 }

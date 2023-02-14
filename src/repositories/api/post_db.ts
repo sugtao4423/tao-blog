@@ -3,8 +3,10 @@ import { GetTag } from '@/models/entities/api/tag'
 import { DatabasePagination, DatabaseTables } from '@/models/entities/database'
 import { Selection } from 'kysely'
 import { From } from 'kysely/dist/cjs/parser/table-parser'
+import CommentDB from './comment_db'
 import db from './database'
 import DBTime from './db_time'
+import DatabaseDeleteError from './errors/db_delete'
 import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
 import DatabaseUpdateError from './errors/db_update'
@@ -203,6 +205,29 @@ export default class PostDB {
       return result.numUpdatedRows
     } catch (e) {
       return new DatabaseUpdateError(e, 'Update post error')
+    }
+  }
+
+  /**
+   * Delete post in database by id
+   * @param id Target post id
+   * @returns Deleted post count if success, `Error` if failed
+   */
+  static deletePost = async (id: number): Promise<bigint | Error> => {
+    const deleteCommentCount = await CommentDB.deleteCommentsByPostId(id)
+    if (deleteCommentCount instanceof Error) {
+      return deleteCommentCount
+    }
+
+    try {
+      const result = await db
+        .deleteFrom('posts')
+        .where('id', '=', id)
+        .executeTakeFirstOrThrow()
+
+      return result.numDeletedRows
+    } catch (e) {
+      return new DatabaseDeleteError(e, 'Delete post error')
     }
   }
 }
