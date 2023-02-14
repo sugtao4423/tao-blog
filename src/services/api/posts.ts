@@ -2,6 +2,7 @@ import {
   CreatedPost,
   GetSpecificPost,
   PaginationGetPosts,
+  UpdatedPost,
 } from '@/models/entities/api/post'
 import DBPagination from '@/repositories/api/db_pagination'
 import PostDB from '@/repositories/api/post_db'
@@ -89,6 +90,29 @@ export default class PostsService extends DBPagination {
     return {
       code: 200,
       data: post,
+    }
+  }
+
+  /**
+   * Update post by id
+   * @param req `NextApiRequest`
+   * @returns `UpdatedPost`
+   */
+  static updatePost = async (req: NextApiRequest): Promise<UpdatedPost> => {
+    const post = await PostValidation.updatePost(req)
+    if (post instanceof Error) {
+      return error(400, post.message)
+    }
+
+    const updatedCount = await PostDB.updatePost(post.id, post)
+    if (updatedCount instanceof Error) {
+      return error(500, updatedCount.message)
+    }
+
+    const isUpdated = updatedCount > 0
+    return {
+      code: isUpdated ? 200 : 409,
+      data: isUpdated ? 'OK' : 'NG',
     }
   }
 }

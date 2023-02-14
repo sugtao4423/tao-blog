@@ -32,3 +32,7 @@ export type CreatePost = {
 }
 
 export type CreatedPost = CommonResponse<'OK' | 'NG'>
+
+export type UpdatePost = Partial<CreatePost>
+
+export type UpdatedPost = CreatedPost

@@ -1,4 +1,4 @@
-import { CreatePost, GetPost } from '@/models/entities/api/post'
+import { CreatePost, GetPost, UpdatePost } from '@/models/entities/api/post'
 import { GetTag } from '@/models/entities/api/tag'
 import { DatabasePagination, DatabaseTables } from '@/models/entities/database'
 import { Selection } from 'kysely'
@@ -7,6 +7,7 @@ import db from './database'
 import DBTime from './db_time'
 import DatabaseInsertError from './errors/db_insert'
 import DatabaseSelectError from './errors/db_select'
+import DatabaseUpdateError from './errors/db_update'
 import TagDB from './tag_db'
 
 const selectTarget = [
@@ -169,6 +170,39 @@ export default class PostDB {
       return (await PostDB.convertRows([post]))[0]
     } catch (e) {
       return new DatabaseSelectError(e, 'Get post error')
+    }
+  }
+
+  /**
+   * Update post in database by id
+   * @param id Target post id
+   * @param post Post to update
+   * @returns Updated post count if success, `Error` if failed
+   */
+  static updatePost = async (
+    id: number,
+    post: UpdatePost
+  ): Promise<bigint | Error> => {
+    try {
+      const result = await db
+        .updateTable('posts')
+        .set({
+          title: post.title,
+          content: post.content,
+          abstract: post.abstract,
+          thumbnailUrl: post.thumbnailUrl,
+          authorId: post.authorId,
+          tagIds: JSON.stringify(post.tagIds),
+          status: post.status,
+          commentable: post.commentable,
+          updatedAt: DBTime.nowDbDatetime(),
+        })
+        .where('id', '=', id)
+        .executeTakeFirstOrThrow()
+
+      return result.numUpdatedRows
+    } catch (e) {
+      return new DatabaseUpdateError(e, 'Update post error')
     }
   }
 }
