@@ -1,4 +1,5 @@
-import { AuthLogin } from '@/models/entities/api/auth'
+import { AuthJwtPayload, AuthLogin } from '@/models/entities/api/auth'
+import GravatarUrl from '@/repositories/api/gravatar'
 import UserDB from '@/repositories/api/user_db'
 import bycrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -42,10 +43,11 @@ export default class AuthLoginService {
       return error(403, 'Invalid password')
     }
 
-    const payload = {
+    const payload: AuthJwtPayload = {
       id: user.id,
       name: user.name,
       email: user.email,
+      gravatarUrl: GravatarUrl(user.email),
       url: user.url,
       createdAt: user.createdAt,
     }
